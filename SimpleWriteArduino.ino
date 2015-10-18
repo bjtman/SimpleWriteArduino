@@ -14,7 +14,7 @@ int fadeValue = 0; // A value between 0 and 255 mapped from video length
 float videoTime = 0.0;
 
 int videoTimeInMillis = 0;
-
+int buttonState;
 
 
 LiquidTWI lcd(0);
@@ -39,9 +39,9 @@ void loop()
   while (Serial.available() > 0) {
 
     // look for the next valid integer in the incoming serial stream:
-    int videoTimeInMillis = Serial.parseInt();
+    videoTime = Serial.parseFloat();
     // do it again:
-    int buttonState = Serial.parseInt();
+    buttonState = Serial.parseInt();
    
 
     // look for the newline. That's the end of your
@@ -59,7 +59,7 @@ void loop()
 
   
   lcd.setCursor(0, 0);
-  lcd.print(videoTimeInMillis);
+  lcd.print(videoTime);
   lcd.setCursor(0,1);
   lcd.print(buttonState);
   

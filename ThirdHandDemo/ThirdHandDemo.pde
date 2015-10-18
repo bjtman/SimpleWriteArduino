@@ -39,15 +39,15 @@ void draw() {
   
   if (mouseOverRect() == true) {  // If mouse is over square,
     fill(204);                    // change color and
-    myPort.write(movieTimeInMilliSeconds + "," + 1 + "\n");            // send an H to indicate mouse is over square
-    println(movieTimeInMilliSeconds + "," + 1);
+    myPort.write(movieTimeInSeconds + "," + 1 + "\n");            // send an H to indicate mouse is over square
+    println(movieTimeInSeconds + "," + 1);
     movie.pause();
     loopAgain = false;
   } 
   else {                          // If mouse is not over square,
     fill(0);                      // change color and
-    myPort.write(movieTimeInMilliSeconds + "," + 0 + "\n");            // send an L otherwise
-    println(movieTimeInMilliSeconds + "," + 0);
+    myPort.write(movieTimeInSeconds + "," + 0 + "\n");            // send an L otherwise
+    println(movieTimeInSeconds + "," + 0);
     if(!loopAgain)
     {
       movie.loop();
