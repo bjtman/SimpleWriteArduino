@@ -27,14 +27,14 @@ void setup()
   pinMode(ledPin, OUTPUT); // Set pin as OUTPUT
   pinMode(fadePin, OUTPUT); // Set pin as OUTPUT
   Serial.begin(115200); // Start serial communication at 9600 bps
-  digitalWrite(fadePin,LOW);
-  lcd.print("Test");
+  digitalWrite(fadePin,LOW); 
+  lcd.print("The 3rd Hand");
   delay(3000);
 }
  
 void loop() 
 {
- 
+  //lcd.clear();
    // if there's any serial available, read it:
   while (Serial.available() > 0) {
 
@@ -66,12 +66,11 @@ void loop()
     //Serial.println(inputString);
     
       
- /* if (val == 'H') 
+  if (buttonState == 1) 
   { // If H was received
-    digitalWrite(ledPin, HIGH); // turn the LED on
-    lcd.print("H");
+    lcd.clear();
   } 
-  else 
+  /*else 
   {
     digitalWrite(ledPin, LOW); // Otherwise turn it OFF
     // analogWrite(fadePin, 0);
