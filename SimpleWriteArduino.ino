@@ -6,7 +6,13 @@
 #include "meArm.h"
 #include "Wire.h"
 #include "LiquidTWI.h"
- 
+
+Servo gripperservo;  // create servo object to control a servo
+Servo baseservo;
+Servo shoulderservo;
+Servo elbowservo;
+
+
 char val; // Data received from the serial port
 int ledPin =11; // Set the pin to digital I/O 4
 int fadePin = 9; // Set the pin for digial fade.
@@ -15,12 +21,17 @@ float videoTime = 0.0;
 
 int videoTimeInMillis = 0;
 int buttonState;
-
+int gripperPin = 6;
 
 LiquidTWI lcd(0);
  
 void setup() 
 {
+  
+  gripperservo.attach(6); // the gripper: 0 means open, 77 means closed
+  baseservo.attach(11);
+//  shoulderservo.attach(10);
+//  elbowservo.attach(9);
   
   // set up the LCD's number of rows and columns: 
   lcd.begin(16, 2);
@@ -29,7 +40,11 @@ void setup()
   Serial.begin(115200); // Start serial communication at 9600 bps
   digitalWrite(fadePin,LOW); 
   lcd.print("The 3rd Hand");
+  gripperservo.write(0);
   delay(3000);
+ // elbowservo.write(80);
+  lcd.clear();
+  gripperservo.write(30);
 }
  
 void loop() 
@@ -69,6 +84,8 @@ void loop()
   if (buttonState == 1) 
   { // If H was received
     lcd.clear();
+    lcd.setCursor(0,1);
+    lcd.print(buttonState);
   } 
   /*else 
   {
@@ -80,7 +97,39 @@ void loop()
     //fadeValue = map(inputString.toInt(),0,8000,0,205);
     analogWrite(fadePin, fadeValue);
     
-   
+  if(buttonState == 2) // time to move!
+  {
+     
+     if(videoTime < 28) 
+     {
+        gripperservo.write(0);
+        baseservo.write(45);
+     }
+     else if(videoTime < 30) {
+        //gripperservo.write(77);
+        baseservo.write(90);
+     }
+     else if(videoTime < 32) {
+        gripperservo.write(0);
+     }
+     
+     
+    /* gripperservo.write(77);
+     delay(1000);
+     gripperservo.write(0);
+     delay(1000);
+     gripperservo.write(45);
+     delay(1000);
+     gripperservo.write(0);
+     delay(1000);
+     gripperservo.write(45);
+     delay(1000);
+     gripperservo.write(77);
+     delay(1000);
+     gripperservo.write(0); */
+  } 
+    
+    
   
  
   

@@ -5,6 +5,23 @@
 
 import processing.serial.*;
 import processing.video.*;
+import controlP5.*;
+
+ControlP5 cp5;
+
+
+int myColor = color(0,0,0);
+
+int sliderValue = 100;
+int sliderTicks1 = 100;
+int sliderTicks2 = 30;
+Slider abc;
+
+int myColorBackground = color(0,0,0);
+int knobValue = 100;
+
+Knob myKnobA;
+Knob myKnobB;
 
 Serial myPort;  // Create object from Serial class
 int val;        // Data received from the serial port
@@ -18,15 +35,71 @@ boolean loopAgain = true;
 
 void setup() 
 {
-  size(800, 800);
+  size(1000, 800);
   // I know that the first port in the serial list on my mac
   // is always my  FTDI adaptor, so I open Serial.list()[0].
   // On Windows machines, this generally opens COM1.
   // Open whatever port is the one you're using.
   String portName = Serial.list()[2];
   myPort = new Serial(this, portName, 115200);
-  movie = new Movie(this, "fingers.mov");
+  movie = new Movie(this, "ThirdHand.mp4");
   movie.loop();
+  
+  cp5 = new ControlP5(this);
+  
+  color c1 = color(204, 153, 0);
+  
+  myKnobA = cp5.addKnob("Duration")
+               .setRange(0,movie.duration())
+               .setValue(50)
+               .setPosition(100,70)
+               .setRadius(50)
+               .setDragDirection(Knob.VERTICAL)
+               ;
+                     
+  myKnobB = cp5.addKnob("knobValue")
+               .setRange(0,255)
+               .setValue(220)
+               .setPosition(100,210)
+               .setRadius(50)
+               .setNumberOfTickMarks(10)
+               .setTickMarkLength(4)
+               .snapToTickMarks(true)
+               .setColorForeground(color(255))
+               .setColorBackground(color(0, 160, 100))
+               .setColorActive(color(255,255,0))
+               .setDragDirection(Knob.HORIZONTAL)
+               ;
+  
+  // create a new button with name 'buttonA'
+  cp5.addButton("Third Hand Active")
+     .setValue(0)
+     .setPosition(372,730)
+     .setSize(130,100)
+     .setColorForeground(color(255))
+     .setColorBackground(color(0, 160, 100))
+     ;
+  
+     
+  // add a vertical slider
+  abc = cp5.addSlider("slider")
+       .setPosition(100,730)
+       .setSize(600,20)
+       .setRange(0,movie.duration())
+       .setValue(128)
+       ;
+  
+  // reposition the Label for controller 'slider'
+  cp5.getController("slider").getValueLabel().align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
+  cp5.getController("slider").getCaptionLabel().align(ControlP5.RIGHT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
+  
+
+  
+  // use Slider.FIX or Slider.FLEXIBLE to change the slider handle
+  // by default it is Slider.FIX
+               
+   
+  
 }
 
 void draw() {
@@ -38,14 +111,22 @@ void draw() {
   
   
   if (mouseOverRect() == true) {  // If mouse is over square,
-    fill(204);                    // change color and
+    fill(0);                    // change color and
     myPort.write(movieTimeInSeconds + "," + 1 + "\n");            // send an H to indicate mouse is over square
     println(movieTimeInSeconds + "," + 1);
     movie.pause();
     loopAgain = false;
   } 
+  
+  else if((movieTimeInSeconds > 26) && (movieTimeInSeconds < 38)) {
+    myPort.write(movieTimeInSeconds + "," + 2 + "\n");
+    println(movieTimeInSeconds + "," + 2);
+  }
+  
+  
+  
   else {                          // If mouse is not over square,
-    fill(0);                      // change color and
+    fill(150);                      // change color and
     myPort.write(movieTimeInSeconds + "," + 0 + "\n");            // send an L otherwise
     println(movieTimeInSeconds + "," + 0);
     if(!loopAgain)
@@ -59,7 +140,10 @@ void draw() {
   image(movie, 0, 0, width, height);
   textSize(32);
   
-  text(movieTimeString, 600, 30); 
+  text(movieTimeString, 800, 30); 
+  abc.setValue(movieTimeInSeconds);
+  
+  
   //movieTimeInSeconds = int(movie.time());
  // myPort.write(str(movieTimeInMilliSeconds));
  // myPort.write('\n');
@@ -86,6 +170,12 @@ int convertMovieTimeToMilliSeconds(float movieTimeInSeconds)
   return int(movieTimeInSeconds * 1000);
   
 }
+
+void slider(float theColor) {
+  myColor = color(theColor);
+  println("a slider event. setting background to "+theColor);
+}
+
 
 
 /*
