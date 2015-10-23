@@ -22,6 +22,7 @@ int knobValue = 100;
 
 Knob myKnobA;
 Knob myKnobB;
+Button mybutton;
 
 Serial myPort;  // Create object from Serial class
 int val;        // Data received from the serial port
@@ -48,16 +49,17 @@ void setup()
   cp5 = new ControlP5(this);
   
   color c1 = color(204, 153, 0);
+  color c2 = color(230, 10, 10);
   
-  myKnobA = cp5.addKnob("Duration")
-               .setRange(0,movie.duration())
-               .setValue(50)
-               .setPosition(100,70)
+  myKnobA = cp5.addKnob("Third Hand Sub Loop")
+               .setRange(26,36)
+               .setValue(26)
+               .setPosition(795,650)
                .setRadius(50)
                .setDragDirection(Knob.VERTICAL)
                ;
                      
-  myKnobB = cp5.addKnob("knobValue")
+  myKnobB = cp5.addKnob("Third Hand Speed Control")
                .setRange(0,255)
                .setValue(220)
                .setPosition(100,210)
@@ -72,17 +74,17 @@ void setup()
                ;
   
   // create a new button with name 'buttonA'
-  cp5.addButton("Third Hand Active")
+mybutton =cp5.addButton("Third Hand Active")
      .setValue(0)
      .setPosition(372,730)
-     .setSize(130,100)
+     .setSize(130,50)
      .setColorForeground(color(255))
      .setColorBackground(color(0, 160, 100))
      ;
   
      
   // add a vertical slider
-  abc = cp5.addSlider("slider")
+  abc = cp5.addSlider("Complete")
        .setPosition(100,730)
        .setSize(600,20)
        .setRange(0,movie.duration())
@@ -90,8 +92,8 @@ void setup()
        ;
   
   // reposition the Label for controller 'slider'
-  cp5.getController("slider").getValueLabel().align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
-  cp5.getController("slider").getCaptionLabel().align(ControlP5.RIGHT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
+  cp5.getController("Complete").getValueLabel().align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
+  cp5.getController("Complete").getCaptionLabel().align(ControlP5.RIGHT, ControlP5.BOTTOM_OUTSIDE).setPaddingX(0);
   
 
   
@@ -121,6 +123,10 @@ void draw() {
   else if((movieTimeInSeconds > 26) && (movieTimeInSeconds < 38)) {
     myPort.write(movieTimeInSeconds + "," + 2 + "\n");
     println(movieTimeInSeconds + "," + 2);
+    mybutton.setColorBackground(color(230,10,10));
+    myKnobA.setValue(movieTimeInSeconds);
+    // set subtrack to red
+    
   }
   
   
@@ -129,6 +135,8 @@ void draw() {
     fill(150);                      // change color and
     myPort.write(movieTimeInSeconds + "," + 0 + "\n");            // send an L otherwise
     println(movieTimeInSeconds + "," + 0);
+     mybutton.setColorBackground(color(0,160,100));
+      myKnobA.setValue(26);
     if(!loopAgain)
     {
       movie.loop();
